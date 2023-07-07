@@ -17,11 +17,10 @@ For training data :
 ```
 python -m faseroh generate-dataset \
     --output-dir general/train \
-    --dataset-size 130000000 \
+    --dataset-size 5000000 \
     --n-processes 128 \
     --seed 1234
 ```
-
 and for evaluation data : 
 
 ```
@@ -31,3 +30,4 @@ python -m faseroh generate-dataset \
     --n-processes 128 \
     --seed 5678
 ```
+Set ```n-processes``` equal to the number of cpu cores(or vcpus) in your machine.
