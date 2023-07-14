@@ -7,6 +7,7 @@ from typing import List, Tuple
 import numpy as np
 import sympy
 from sympy import expand
+from scipy.stats import poisson
 
 from ..tokenizers import GeneralTermTokenizer
 from . import generate_all_possible_ranges, timeout, TimeoutError
@@ -232,13 +233,22 @@ class ExpressionGenerator:
 def convert(infix):
     return expand(sympy.simplify(str(infix))).evalf(8)
 
+def is_linear(expr, vars):
+    for x in vars:
+        for y in vars:
+            try:
+                if not sympy.Eq(sympy.diff(expr, x, y), 0):
+                    return False
+            except TypeError:
+                return False
+    return True
+
 @timeout(3)
 def check_positivity(expression, bin_width, n_bins):
-  from sympy import lambdify, Symbol
-  x = Symbol('x')
+  x = sympy.Symbol('x')
   try :
     xset = [i*bin_width for i in range(1,n_bins)]
-    f = lambdify(x, expression)
+    f = sympy.lambdify(x, expression)
 
     all_positive = True
     for x_val in xset:
@@ -253,15 +263,14 @@ def check_positivity(expression, bin_width, n_bins):
     raise RuntimeWarning
   
 
-@timeout(5)
+
+@timeout(6)
 def generate_histogram(f, N = 1000, K = 200, interval = (0,1)):
-  from sympy import integrate, Symbol, simplify
-  import numpy as np
   try: 
-    x = Symbol('x')
-    F = integrate(f, x)
+    x = sympy.Symbol('x')
+    F = sympy.integrate(f, x)
     DI = F.subs(x, interval[1]) - F.subs(x, interval[0]).evalf(8)
-    f_n = simplify(f/DI).evalf(8)
+    f_n = sympy.simplify(f/DI).evalf(8)
     if (f_n == 1):
         raise RuntimeWarning("Constant function")
     bins = K
@@ -278,11 +287,11 @@ def generate_histogram(f, N = 1000, K = 200, interval = (0,1)):
           ret.append(Sum_count * bin_wid * f_n.subs(x, (prev+cur)/2).evalf()) #F_n.subs(x, cur)
           prev = cur
       
-      ret = np.array(ret)
+      ret = np.array(ret ,dtype='float64')
 
       if not((Sum_count - 3) <= ret.sum() <= (Sum_count + 3)):
         raise RuntimeWarning("Sum Count not satisfied")
-      
+
     #   if np.isclose(np.min(ret), np.max(ret)):
     #     print("Found almost constant function.")
     #     raise RuntimeWarning("Found almost constant function.")
@@ -294,17 +303,6 @@ def generate_histogram(f, N = 1000, K = 200, interval = (0,1)):
     
   except Exception:
     raise RuntimeWarning
-
-
-def is_linear(expr, vars):
-    for x in vars:
-        for y in vars:
-            try:
-                if not sympy.Eq(sympy.diff(expr, x, y), 0):
-                    return False
-            except TypeError:
-                return False
-    return True
 
 
 def generate_random_expression(
@@ -367,7 +365,7 @@ def generate_random_expression(
                     raise RuntimeWarning("Contains Imaginary number")
 
                 sympy_res, ret = generate_histogram(f = sympy_res, K = n_points)
-
+                ret_rvs = poisson.rvs(ret)
                 tree = Tree(convert_to_binary_tree(sympy_res, tokenizer))
 
                 if len(tree.symbolic_pre_order) >= 60:
@@ -381,9 +379,8 @@ def generate_random_expression(
                 if np.any(abs_values[abs_values != 0] < 1e-10):
                     raise RuntimeWarning("Coefficient is too small.")
 
-                print("done")
                 return {
-                    "points": ret,
+                    "points": ret_rvs,
                     "constants": np.array(
                         tree.value_pre_order + [0.0], dtype=np.float32
                     ),
@@ -409,6 +406,7 @@ def generate_random_expression(
                 pass
 
     return generate
+
 
 
 if __name__ == "__main__":
