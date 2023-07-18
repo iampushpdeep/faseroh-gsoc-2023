@@ -420,7 +420,7 @@ if __name__ == "__main__":
         success, infix = prefix_to_infix(
             generated["symbolic_expression"].split(),
             generated["constants"][:-1],
-            GeneralTermTokenizer(["y"]),
+            GeneralTermTokenizer(["x"]),
         )
 
         print(i, infix)
