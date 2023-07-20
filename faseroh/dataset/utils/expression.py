@@ -367,7 +367,7 @@ def generate_random_expression(
                 sympy_res, ret = generate_histogram(f = sympy_res, K = n_points)
                 ret_rvs = poisson.rvs(ret)
                 tree = Tree(convert_to_binary_tree(sympy_res, tokenizer))
-
+                
                 if len(tree.symbolic_pre_order) >= 60:
                     raise RuntimeWarning("Too long!")
                 
@@ -378,6 +378,15 @@ def generate_random_expression(
 
                 if np.any(abs_values[abs_values != 0] < 1e-10):
                     raise RuntimeWarning("Coefficient is too small.")
+                
+                # Print data while it's generated
+                
+                # print("Expression is : ", sympy_res)
+                # print("Histogram float counts in bins : ", ret)
+                # print("Sum : ", sum(ret))
+                # print("Histogram(Poisson RVS) : ", ret_rvs)
+                # print("Sum : ", sum(ret_rvs))
+                # print()
 
                 return {
                     "points": ret_rvs,
