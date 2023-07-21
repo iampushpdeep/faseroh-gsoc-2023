@@ -30,4 +30,4 @@ python -m faseroh generate-dataset \
     --n-processes 128 \
     --seed 5678
 ```
-Set ```n-processes``` equal to the number of cpu cores(or vcpus) in your machine.
+Set ```n-processes``` equal to the number of cpu cores(or Virtual CPUs) in your machine.
