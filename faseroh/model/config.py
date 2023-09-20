@@ -6,6 +6,11 @@ try:
 except ImportError:
     from typing_extensions import Literal
 
+
+from .input_regularizers import Regularizer
+
+DecoderMode = Literal["sum", "concat", "no_reg"]
+
 @dataclass
 class PositionalConfig:
     max_len: int
