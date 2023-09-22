@@ -1,7 +1,7 @@
 import aclick
 
-from symformer.model.runner import Runner
-from symformer.model.utils.const_improver import OptimizationType
+from faseroh.model.runner import Runner
+from faseroh.model.utils.const_improver import OptimizationType
 
 
 @aclick.command("predict")
