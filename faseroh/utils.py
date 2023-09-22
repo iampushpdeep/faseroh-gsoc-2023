@@ -28,11 +28,8 @@ def pull_model(checkpoint, override=False):
     import requests
     from tqdm import tqdm
 
-    path = f"https://data.ciirc.cvut.cz/public/projects/2022SymFormer/checkpoints/{checkpoint}.tar.gz"
-    #    raise NotImplementedError("Pulling the model is removed for the review.")
-
     basename = os.path.split(path)[1][: -len(".tar.gz")]
-    local_path = os.path.expanduser(f"~/.cache/symformer/{basename}")
+    local_path = os.path.expanduser(f"~/.cache/faseroh/{basename}")
     if os.path.exists(local_path):
         if override:
             shutil.rmtree(local_path)

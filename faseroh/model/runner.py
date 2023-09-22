@@ -7,13 +7,13 @@ import tensorflow as tf
 from sklearn.metrics import r2_score
 from sympy import sympify
 
-from symformer.dataset.tokenizers import GeneralTermTokenizer
-from symformer.dataset.utils.sympy_functions import expr_to_func
-from symformer.dataset.utils.expression import generate_histogram
+from faseroh.dataset.tokenizers import GeneralTermTokenizer
+from faseroh.dataset.utils.sympy_functions import expr_to_func
+from faseroh.dataset.utils.expression import generate_histogram
 
 from scipy.stats import poisson
 
-from symformer.utils import pull_model
+from faseroh.utils import pull_model
 from .config import Config
 from .model import TransformerWithRegressionAsSeq
 from .utils.const_improver import OptimizationType
