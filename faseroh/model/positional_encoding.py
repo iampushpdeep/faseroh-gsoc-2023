@@ -19,7 +19,7 @@ def positional_encoding(length, depth):
   return tf.cast(pos_encoding, dtype=tf.float32)
      
 class PositionalEmbedding(tf.keras.layers.Layer):
-  def __init__(self, vocab_size, d_model, max_len = 2048):
+  def __init__(self, vocab_size, d_model, max_len = 200):
     super().__init__()
     self.d_model = d_model
     self.embedding = tf.keras.layers.Embedding(vocab_size, d_model, mask_zero=True) 

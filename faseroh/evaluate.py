@@ -4,13 +4,13 @@ import numpy as np
 import tensorflow as tf
 from aclick import command
 
-from symformer.dataset.tokenizers import GeneralTermTokenizer
-from symformer.dataset.utils.tree import prefix_to_infix
-from symformer.model.model import TransformerType
-from symformer.model.runner import Runner
-from symformer.model.utils.const_improver import OptimizationType
-from symformer.model.utils.convertor import clean_expr
-from symformer.training.datasets import get_datasets
+from faseroh.dataset.tokenizers import GeneralTermTokenizer
+from faseroh.dataset.utils.tree import prefix_to_infix
+from faseroh.model.model import TransformerType
+from faseroh.model.runner import Runner
+from faseroh.model.utils.const_improver import OptimizationType
+from faseroh.model.utils.convertor import clean_expr
+from faseroh.training.datasets import get_datasets
 
 
 @command("evaluate")

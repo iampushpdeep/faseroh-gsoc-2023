@@ -23,14 +23,14 @@ class EncoderLayer(tf.keras.layers.Layer):
     return x
   
 class Encoder(tf.keras.layers.Layer):
-  def __init__(self, *, cfg: EncoderConfig):
+  def __init__(self, *, cfg: EncoderConfig, vocab_size=1000):
     super().__init__()
 
     self.d_model = cfg.d_model
     self.num_layers = cfg.num_layers
 
     self.pos_embedding = PositionalEmbedding(
-        vocab_size=cfg.vocab_size, d_model=cfg.d_model)
+        vocab_size=vocab_size, d_model=cfg.d_model)
 
     self.enc_layers = [
         EncoderLayer(d_model=cfg.d_model,
