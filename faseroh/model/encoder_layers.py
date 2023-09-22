@@ -23,23 +23,22 @@ class EncoderLayer(tf.keras.layers.Layer):
     return x
   
 class Encoder(tf.keras.layers.Layer):
-  def __init__(self, *, num_layers, d_model, num_heads,
-               dff, vocab_size, dropout_rate=0.1):
+  def __init__(self, *, cfg: EncoderConfig):
     super().__init__()
 
-    self.d_model = d_model
-    self.num_layers = num_layers
+    self.d_model = cfg.d_model
+    self.num_layers = cfg.num_layers
 
     self.pos_embedding = PositionalEmbedding(
-        vocab_size=vocab_size, d_model=d_model)
+        vocab_size=cfg.vocab_size, d_model=cfg.d_model)
 
     self.enc_layers = [
-        EncoderLayer(d_model=d_model,
-                     num_heads=num_heads,
-                     dff=dff,
-                     dropout_rate=dropout_rate)
-        for _ in range(num_layers)]
-    self.dropout = tf.keras.layers.Dropout(dropout_rate)
+        EncoderLayer(d_model=cfg.d_model,
+                     num_heads=cfg.num_heads,
+                     dff=cfg.dff,
+                     dropout_rate=cfg.dropout_rate)
+        for _ in range(cfg.num_layers)]
+    self.dropout = tf.keras.layers.Dropout(cfg.dropout_rate)
 
   def call(self, x):
     # `x` is token-IDs shape: (batch, seq_len)
