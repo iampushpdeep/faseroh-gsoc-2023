@@ -20,27 +20,6 @@ from .utils.const_improver import OptimizationType
 from .utils.convertor import BestFittingFilter
 from .utils.decoding import RandomSampler, TopK
 
-
-# def sample_points(func, num_vars):
-#     for left, right in generate_all_possible_ranges(num_vars, -5, 5):
-#         try:
-#             x = np.random.uniform(left, right, (100 * num_vars, num_vars))
-#             y = evaluate_points(func, x)
-
-#             if np.any(np.isnan(y)) or np.any(np.isinf(y)):
-#                 raise RuntimeWarning("Is nan or inf!")
-
-#             if not np.all(np.isfinite(y)):
-#                 raise RuntimeWarning("Not finite")
-
-#             res = np.concatenate((x, np.reshape(y, (-1, 1))), axis=1)
-#             return res
-#         except RuntimeWarning:
-#             continue
-
-#     raise RuntimeError("No range found")
-
-
 class Runner:
     def __init__(
         self,
@@ -59,7 +38,7 @@ class Runner:
         self.model = self.load_model(model_path, config)
         self.search = RandomSampler(
             sampler,
-            50,
+            200,
             self.tokenizer,
             self.model,
             True,
@@ -126,6 +105,9 @@ class Runner:
         return (
             pred_inorder,
             r2_score(points, pred_y),
+            np.mean(
+                np.abs(points - pred_y) / np.abs(points)
+            ),
         )
 
     def predict_all(self, equation=None, points=None):
@@ -134,7 +116,7 @@ class Runner:
             sym_eq = sympify(equation)
             # lam = expr_to_func(sym_eq, self.variables)
             if points is None:
-                _, mean_counts = generate_histogram(f = sympy_eq)
+                _, mean_counts = generate_histogram(f = sym_eq)
                 points = poisson.rvs(mean_counts)
                 points = tf.convert_to_tensor([points])
 
