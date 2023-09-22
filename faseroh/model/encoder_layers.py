@@ -7,7 +7,7 @@ from .config import EncoderConfig
 
 
 class EncoderLayer(tf.keras.layers.Layer):
-  def __init__(self,*, d_model, num_heads, dff, dropout_rate=0.1):
+  def __init__(self, d_model, num_heads, dff, dropout_rate=0.1):
     super().__init__()
 
     self.self_attention = GlobalSelfAttention(
@@ -23,7 +23,7 @@ class EncoderLayer(tf.keras.layers.Layer):
     return x
   
 class Encoder(tf.keras.layers.Layer):
-  def __init__(self, *, cfg: EncoderConfig, vocab_size=1000):
+  def __init__(self, cfg: EncoderConfig, vocab_size=1000):
     super().__init__()
 
     self.d_model = cfg.d_model

@@ -203,7 +203,7 @@ class RandomSampler(Search):
     @tf.function
     def decode(self, points: tf.Tensor):
         # maybe there should be strategy.run to get the results
-        encoder_state = self.model.encoder(tf.expand_dims(points, 0), False)
+        encoder_state = self.model.encoder(tf.expand_dims(points, 0))
         finished = get_empty_tensor(tf.int64)
         reg_finished = get_empty_tensor(tf.float32)
         logits_finished = get_empty_tensor(tf.float32, shape=(0, 0, self.vocab_size))
@@ -328,7 +328,7 @@ class GreedySearch(Search):
         all_predicted = tf.zeros(tf.shape(start), dtype=tf.bool)
 
         enc_output = self.model.encoder(
-            points, False
+            points
         )  # (batch_size, inp_seq_len, d_model)
         regression_predictions = tf.zeros([tf.shape(points)[0], 1])
         for i in tf.range(self.max_len):

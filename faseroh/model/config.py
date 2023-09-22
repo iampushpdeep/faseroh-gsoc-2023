@@ -23,8 +23,8 @@ class EncoderConfig:
     num_heads: int
     num_layers: int
     d_model: int
-    dropout_rate: Optional[float] = None
     vocab_size: int
+    dropout_rate: Optional[float] = None
 
 @dataclass
 class DecoderConfig:

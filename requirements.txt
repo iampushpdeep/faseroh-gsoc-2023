@@ -80,7 +80,7 @@ tabulate==0.8.9
 tensorboard
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.0
-tensorflow
+tensorflow==2.8.0
 tensorflow-addons
 tensorflow-datasets==4.5.2
 tensorflow-estimator==2.7.0

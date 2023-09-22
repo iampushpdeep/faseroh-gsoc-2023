@@ -45,7 +45,7 @@ class Transformer(TransformerBase):
 
         look_ahead_mask = create_mask(tar)
 
-        enc_output = self.encoder(inp, training)  # (batch_size, inp_seq_len, d_model)
+        enc_output = self.encoder(inp)  # (batch_size, inp_seq_len, d_model)
 
         # dec_output.shape == (batch_size, tar_seq_len, d_model)
         dec_output, attention_weights = self.decoder(
@@ -183,7 +183,7 @@ class TransformerWithRegressionAsSeq(TransformerBase):
         inp, tar, reg_tar = inputs
         reg_tar = tf.expand_dims(reg_tar, -1)
         look_ahead_mask = create_mask(tar)
-        enc_output = self.encoder(inp, training)  # (batch_size, inp_seq_len, d_model)
+        enc_output = self.encoder(inp)  # (batch_size, inp_seq_len, d_model)
 
         # dec_output.shape == (batch_size, tar_seq_len, d_model)
         dec_output, attention_weights = self.decoder(
@@ -329,7 +329,7 @@ class TransformerNoRegression(TransformerNoRegBase):
         # Keras models prefer if you pass all your inputs in the first argument
         inp, tar = inputs
         look_ahead_mask = create_mask(tar)
-        enc_output = self.encoder(inp, training)  # (batch_size, inp_seq_len, d_model)
+        enc_output = self.encoder(inp)  # (batch_size, inp_seq_len, d_model)
 
         # dec_output.shape == (batch_size, tar_seq_len, d_model)
         dec_output, attention_weights = self.decoder(
