@@ -3,7 +3,7 @@ import tensorflow as tf
 from .positional_encoding import PositionalEmbedding
 from .attention import GlobalSelfAttention
 from .feedforward import FeedForward
-
+from .config import EncoderConfig
 
 
 class EncoderLayer(tf.keras.layers.Layer):

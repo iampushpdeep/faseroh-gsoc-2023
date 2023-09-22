@@ -45,7 +45,6 @@ class DatasetConfig:
     valid_path: str
     num_of_not_seen: int
     batch_size: int
-    sample_points: bool
     test_size: int
     dataset_size: int
     variables: List[str]
