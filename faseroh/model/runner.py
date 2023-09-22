@@ -8,8 +8,10 @@ from sklearn.metrics import r2_score
 from sympy import sympify
 
 from symformer.dataset.tokenizers import GeneralTermTokenizer
-from symformer.dataset.utils import generate_all_possible_ranges
-from symformer.dataset.utils.sympy_functions import evaluate_points, expr_to_func
+from symformer.dataset.utils.sympy_functions import expr_to_func
+from symformer.dataset.utils.expression import generate_histogram
+
+from scipy.stats import poisson
 
 from symformer.utils import pull_model
 from .config import Config
@@ -19,24 +21,24 @@ from .utils.convertor import BestFittingFilter
 from .utils.decoding import RandomSampler, TopK
 
 
-def sample_points(func, num_vars):
-    for left, right in generate_all_possible_ranges(num_vars, -5, 5):
-        try:
-            x = np.random.uniform(left, right, (100 * num_vars, num_vars))
-            y = evaluate_points(func, x)
+# def sample_points(func, num_vars):
+#     for left, right in generate_all_possible_ranges(num_vars, -5, 5):
+#         try:
+#             x = np.random.uniform(left, right, (100 * num_vars, num_vars))
+#             y = evaluate_points(func, x)
 
-            if np.any(np.isnan(y)) or np.any(np.isinf(y)):
-                raise RuntimeWarning("Is nan or inf!")
+#             if np.any(np.isnan(y)) or np.any(np.isinf(y)):
+#                 raise RuntimeWarning("Is nan or inf!")
 
-            if not np.all(np.isfinite(y)):
-                raise RuntimeWarning("Not finite")
+#             if not np.all(np.isfinite(y)):
+#                 raise RuntimeWarning("Not finite")
 
-            res = np.concatenate((x, np.reshape(y, (-1, 1))), axis=1)
-            return res
-        except RuntimeWarning:
-            continue
+#             res = np.concatenate((x, np.reshape(y, (-1, 1))), axis=1)
+#             return res
+#         except RuntimeWarning:
+#             continue
 
-    raise RuntimeError("No range found")
+#     raise RuntimeError("No range found")
 
 
 class Runner:
@@ -104,35 +106,36 @@ class Runner:
 
     def predict(self, equation, points=None):
         sym_eq = sympify(equation)
-        lam = expr_to_func(sym_eq, self.variables)
+        # lam = expr_to_func(sym_eq, self.variables)
         if points is None:
-            points = sample_points(lam, len(self.variables))
+            _ , mean_counts = generate_histogram(f = sym_eq)
+            points = poisson.rvs(mean_counts)
             points = tf.convert_to_tensor([points])
 
         prediction = self.search.batch_decode(points)
         pred_inorder = prediction[-2][0]
         prediction = prediction[-1][0]
-        golden_lambda = expr_to_func(prediction, self.variables)
+        # golden_lambda = expr_to_func(prediction, self.variables)
 
-        points = sample_points(lam, len(self.variables))
-        pred_y = evaluate_points(
-            golden_lambda, tf.reshape(points[:, :-1], (-1, len(self.variables)))
-        )
+        _ , mean_counts = generate_histogram(f = sym_eq)
+        points = poisson.rvs(mean_counts)
+        
+        _, mean_pred_y = generate_histogram(f = prediction)
+        pred_y = poisson.rvs(mean_pred_y)
+
         return (
             pred_inorder,
-            r2_score(points[:, -1], pred_y.reshape([-1])),
-            np.mean(
-                np.abs(points[:, -1] - pred_y.reshape([-1])) / np.abs(points[:, -1])
-            ),
+            r2_score(points, pred_y),
         )
 
     def predict_all(self, equation=None, points=None):
         if points is None:
             assert equation is not None
             sym_eq = sympify(equation)
-            lam = expr_to_func(sym_eq, self.variables)
+            # lam = expr_to_func(sym_eq, self.variables)
             if points is None:
-                points = sample_points(lam, len(self.variables))
+                _, mean_counts = generate_histogram(f = sympy_eq)
+                points = poisson.rvs(mean_counts)
                 points = tf.convert_to_tensor([points])
 
         prediction = self.search.batch_decode(points, return_all=True)

@@ -316,7 +316,6 @@ def generate_histogram(f, N = 1000, K = 200, interval = (0,1)):
 def generate_random_expression(
     rng: np.random.Generator,
     n_points: int,
-    sampled_points_range: Tuple[float, float],
     max_num_ops: int,
     variables=None,
 ):
@@ -324,35 +323,6 @@ def generate_random_expression(
         variables = ["x"]
     gen = ExpressionGenerator(max_num_ops, rng, variables)
     tokenizer = GeneralTermTokenizer()
-
-    def sample_points(func):
-        num_variables = len(variables)
-        for left, right in generate_all_possible_ranges(
-            num_variables, sampled_points_range[0], sampled_points_range[1]
-        ):
-            for _ in range(4):
-                try:
-                    x = gen.rng.uniform(left, right, (n_points, num_variables))
-                    y = evaluate_points(func, x)
-
-                    if np.any(np.isnan(y)) or np.any(np.isinf(y)):
-                        raise RuntimeWarning("Is nan or inf!")
-
-                    if np.any(np.abs(y) > 1e7):
-                        raise RuntimeWarning("Too large or too small")
-
-                    if np.any(np.iscomplex(y)):
-                        raise RuntimeWarning("Complex")
-
-                    if not np.all(np.isfinite(y)):
-                        raise RuntimeWarning("Not finite")
-
-                    res = np.concatenate((x, np.reshape(y, (-1, 1))), axis=1)
-                    return res
-                except RuntimeWarning:
-                    continue
-
-        raise RuntimeError("No range found")
 
     warnings.filterwarnings("error")
 
@@ -429,7 +399,7 @@ def generate_random_expression(
 
 if __name__ == "__main__":
     generator = generate_random_expression(
-        np.random.default_rng(), 200, (-5, 5), 10, ["x"]
+        np.random.default_rng(), 200, 10, ["x"]
     )
     now = time.time()
     for i in range(1000):
