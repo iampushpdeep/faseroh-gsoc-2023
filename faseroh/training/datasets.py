@@ -249,5 +249,4 @@ def get_datasets(
         False,
     )
     validation_set = strategy.distribute_datasets_from_function(validation_policy)
-
     return training_set, validation_set

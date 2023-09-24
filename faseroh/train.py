@@ -51,7 +51,7 @@ def train(config: Config):
                     (
                         None,
                         config.dataset_config.num_points,
-                        len(config.dataset_config.variables) + 1,
+                        # len(config.dataset_config.variables) + 1,
                     ),
                     (None, None),
                 ]
@@ -65,7 +65,7 @@ def train(config: Config):
                     (
                         None,
                         config.dataset_config.num_points,
-                        len(config.dataset_config.variables) + 1,
+                        # len(config.dataset_config.variables) + 1,
                     ),
                     (None, None),
                     (None, None),
@@ -78,7 +78,7 @@ def train(config: Config):
                     (
                         None,
                         config.dataset_config.num_points,
-                        len(config.dataset_config.variables) + 1,
+                        # len(config.dataset_config.variables) + 1,
                     ),
                     (None, None),
                 ]

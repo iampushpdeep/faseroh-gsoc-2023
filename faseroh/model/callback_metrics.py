@@ -143,10 +143,10 @@ class PointMetrics(CallbackMetric):
     def log(self, logs):
         for log in logs:
             name = "pointmetric"
-            length = log[name]["valid_length"]
+            length = log["valid_length"]
             if length != 0:
-                self.golden_hists.append(log[name]["golden"][:length])
-                self.prediction_hists.append(log[name]["prediction"][:length])
+                self.golden_hists.append(log["golden"][:length])
+                self.prediction_hists.append(log["prediction"][:length])
 
 
     def commit(self, dataset_name: str, search_name: str, model: tf.keras.Model):

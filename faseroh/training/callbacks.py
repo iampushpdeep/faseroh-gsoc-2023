@@ -59,7 +59,7 @@ def get_callbacks(
         )
         callbacks.append(input_regularizer_callback)
 
-    wandb.init(project="symbolic-regression", entity="r4i", config=wandb_config)
+    wandb.init(project="symbolic-pred", entity="pushpdeep", config=wandb_config)
     wandb_callback = ExtendedWandbCallback(save_model=False)
 
     tensorboard_callback = tf.keras.callbacks.TensorBoard(
