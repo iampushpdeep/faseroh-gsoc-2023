@@ -31,3 +31,22 @@ python -m faseroh generate-dataset \
     --seed 5678
 ```
 Set ```n-processes``` equal to the number of cpu cores(or Virtual CPUs) in your machine.
+
+## Training the model
+
+To train the model, run following command :
+```
+python -m faseroh train \
+    --config configs/{config name}.json \
+    --dataset-path /path/to/train/dataset/ \
+    --dataset-valid-path /path/to/valid/dataset/
+```
+where `{config name}` is is one of the files contained in the `configs` directory.
+
+## Evaluating the model
+
+To run evaluation on the test dataset run the following command:
+
+```
+python -m faseroh evaluate --model faseroh-univariate --test-dataset-path path/to/datast
+```
