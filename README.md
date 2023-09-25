@@ -48,7 +48,7 @@ where `{config name}` is is one of the files contained in the `configs` director
 To run evaluation on the test dataset run the following command:
 
 ```
-python -m faseroh evaluate --model faseroh-univariate --test-dataset-path path/to/datast
+python -m faseroh evaluate --model faseroh-univariate --test-dataset-path path/to/dataset 
 ```
 ## Directory Structure
 ```bash
